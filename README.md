@@ -22,7 +22,7 @@
     *   直接從介面**上傳**圖片檔案作為弱點證據，也支援從剪貼簿**貼上**圖片快速新增截圖。
     *   檔案會自動命名為（標的編號-弱點來源-弱點名稱-弱點URL-弱點實體-流水號），
     *   並保存在 `data/專案名稱/screenshots`
-    *   刪除圖片時圖片會被移動至`_trash_screenshots`資料夾內。\
+    *   刪除圖片時圖片會被移動至`data/專案名稱/_trash_screenshots`資料夾內。\
         <img width="1090" alt="image" src="https://github.com/user-attachments/assets/29fd97b0-2b03-4c27-a3dd-38bcbaf01e22" />
     *   標記某問題是否已**完成全部截圖**，已確認收集完弱點的所有證據。\
         <img width="1094" alt="image" src="https://github.com/user-attachments/assets/578e7ad6-cb73-4884-aeae-373e83953ece" />
@@ -63,7 +63,7 @@
     *   可在特定報告中手動添加不在 AppScan 掃描結果中的弱點，並進行狀態管理、筆記和截圖。\
         <img width="1129" alt="image" src="https://github.com/user-attachments/assets/f4c64acb-25d2-4e24-911b-76d6bef928a4" />
         <img width="728" alt="image" src="https://github.com/user-attachments/assets/0234c1ef-7b41-4312-acf8-684a21d3bfcb" />
-    *   你可以在 `_internal\data\weakness_list.txt` 內加入常用弱點名稱，手動新增弱點時會變成下拉選單，可快速選取。\
+    *   你可以在 `data/weakness_list.txt` 內加入常用弱點名稱，手動新增弱點時會變成下拉選單，可快速選取。\
         <img width="875" alt="image" src="https://github.com/user-attachments/assets/797392de-e521-4b93-8242-b6a35b9a2508" />
 
 
