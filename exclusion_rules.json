@@ -1,0 +1,18 @@
+[
+    {
+        "issue_type": "加密的階段作業 (SSL) Cookie 中遺漏安全屬性",
+        "entity_pattern": "_ga"
+    },
+    {
+        "issue_type": "加密的階段作業 (SSL) Cookie 中遺漏安全屬性",
+        "entity_pattern": "_gid"
+    },
+    {
+        "issue_type": "加密的階段作業 (SSL) Cookie 中遺漏安全屬性",
+        "entity_pattern": "Language"
+    },
+    {
+        "issue_type": "加密的階段作業 (SSL) Cookie 中遺漏安全屬性",
+        "entity_pattern": "fontsize"
+    }
+]
