@@ -13,7 +13,7 @@
     *   提供了篩選掃描檔的功能，快速排除低風險報告。\
         <img width="1125" alt="image" src="https://github.com/user-attachments/assets/78c531ca-b872-40f2-b34e-66f0efabfc23" />
         <img width="935" alt="image" src="https://github.com/user-attachments/assets/ec589256-e566-43e9-ac51-09a64c773c28" />
-    *   視覺化顯示掃描摘要和掃描統計數據，並提供快捷鍵，幫助你開啟對印的掃描原始檔（本功能會將掃描檔開啟在 Server 端）。\
+    *   視覺化顯示掃描摘要和掃描統計數據，並提供快捷鍵，幫助你開啟對應的掃描原始檔（本功能會將掃描檔開啟在 Server 端）。\
         <img width="654" alt="程式主介面" src="https://github.com/user-attachments/assets/46555b2f-489a-4e1a-8ad1-efc9181162be" />
     *   每個弱點以獨立卡片展示，包含嚴重性、URL、受影響實體（參數、Cookie 等）、AppScan 判斷原因及相關 HTTP 流量。\
         <img width="614" alt="單一問題卡片" src="https://github.com/user-attachments/assets/44349654-93cb-4c45-8061-9bbed6c39445" />
