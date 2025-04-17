@@ -1,1 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-TW"> <!-- 指定頁面語言為繁體中文 -->
+<head>
+    <meta charset="UTF-8"> <!-- 使用 UTF-8 編碼 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 設定響應式視口 -->
+    <title>AppScan 報告檢視器 - 選擇專案</title> <!-- 頁面標題 -->
+    <!-- 引入 Bootstrap 5 CSS 框架 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 引入 Font Awesome 6 圖示庫 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- 引入 Google 字體 (Noto Sans TC) -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- 基本頁面樣式 --- */
+        body {
+            background-color: #f0f2f5; /* 淡灰色背景 */
+            padding-top: 40px; /* 頂部留白 */
+            font-family: 'Noto Sans TC', sans-serif; /* 使用 Noto Sans TC 字體 */
+        }
+        /* --- 內容容器樣式 --- */
+        .container {
+            max-width: 800px; /* 限制最大寬度 */
+        }
+        /* --- 單個專案卡片樣式 --- */
+        .project-card {
+            background-color: #fff; /* 白色背景 */
+            border: 1px solid #dee2e6; /* 淺灰色邊框 */
+            border-radius: 0.5rem; /* 圓角 */
+            margin-bottom: 1rem; /* 卡片間底部間距 */
+            transition: all 0.2s ease-in-out; /* 添加平滑過渡效果 (陰影、邊框、位移) */
+            text-decoration: none; /* 移除連結底線 */
+            color: inherit; /* 繼承父元素文字顏色 */
+            display: block; /* 使整個卡片可點擊 */
+        }
+        /* --- 專案卡片懸停效果 --- */
+        .project-card:hover {
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1); /* 添加陰影 */
+            border-color: #0d6efd; /* 邊框變藍色 */
+            transform: translateY(-2px); /* 向上輕微移動 */
+        }
+        /* --- 卡片內容區域樣式 --- */
+        .project-card .card-body {
+            padding: 1.5rem; /* 內邊距 */
+            display: flex; /* 使用 Flexbox 佈局 */
+            align-items: center; /* 垂直居中 */
+        }
+        /* --- 卡片圖示樣式 --- */
+        .project-card .icon {
+            font-size: 1.8rem; /* 圖示大小 */
+            color: #0d6efd; /* 圖示顏色 (藍色) */
+            margin-right: 1.2rem; /* 圖示右側間距 */
+            min-width: 40px; /* 最小寬度，確保對齊 */
+            text-align: center; /* 圖示居中 */
+        }
+        /* --- 專案名稱樣式 --- */
+        .project-card .project-name {
+            font-size: 1.2rem; /* 字體大小 */
+            font-weight: 500; /* 字體半粗 */
+            color: #212529; /* 深灰色文字 */
+        }
+        /* --- 專案資料夾名稱 (內部名稱) 樣式 --- */
+        .project-card .project-folder {
+            font-size: 0.85rem; /* 較小字體 */
+            color: #6c757d; /* 灰色文字 */
+            margin-top: 0.2rem; /* 與上方專案名稱的間距 */
+        }
+        /* --- 頁面主標題 (H1) 樣式 --- */
+        h1 {
+            text-align: center; /* 居中 */
+            margin-bottom: 1rem; /* 下方間距 */
+            color: #343a40; /* 深灰色文字 */
+            font-weight: 700; /* 字體加粗 */
+        }
+        /* --- 頁面頭部區域 (包含標題、設定連結、說明文字) --- */
+        .header-area {
+            text-align: center; /* 內容居中 */
+            margin-bottom: 2rem; /* 底部間距 */
+        }
+        /* --- 設定連結按鈕樣式 --- */
+        .settings-link {
+            font-size: 0.9rem; /* 較小字體 */
+        }
+        /* --- 說明文字樣式 --- */
+        .instructions {
+            color: #6c757d; /* 灰色文字 */
+            margin-bottom: 2.5rem; /* 底部間距 */
+        }
+        /* --- 提示框 (Flash Message) 樣式 --- */
+        .alert {
+            font-size: 0.9rem; /* 較小字體 */
+        }
+    </style>
+</head>
+<body>
+    <!-- 主內容容器 -->
+    <div class="container">
+        <!-- 頁面頭部 -->
+        <div class="header-area">
+            <!-- 主標題和圖示 -->
+            <h1>
+                <i class="fas fa-shield-alt me-2"></i> AppScan 報告檢視器
+            </h1>
+            <!-- 指向全域設定頁面的連結按鈕 -->
+            <a href="{{ url_for('global_settings_page') }}" class="btn btn-outline-secondary btn-sm settings-link">
+                <i class="fas fa-sliders-h"></i> 設定通用排除規則
+            </a>
+            <!-- 頁面說明文字 -->
+            <p class="instructions mt-3">請選擇要瀏覽的專案。</p>
+        </div>
 
+        <!-- Flask Flash 訊息顯示區域 -->
+        {% with messages = get_flashed_messages(with_categories=true) %} <!-- 獲取 Flash 訊息 (包含分類) -->
+            {% if messages %} <!-- 如果有訊息 -->
+                {% for category, message in messages %} <!-- 遍歷訊息 -->
+                    <!-- 顯示 Bootstrap Alert 提示框 -->
+                    <!-- 根據 category 設置 alert 樣式 (例如 'danger', 'warning', 'success', 'info') -->
+                    <div class="alert alert-{{ category if category != 'message' else 'info' }} alert-dismissible fade show" role="alert">
+                        {{ message }} <!-- 顯示訊息內容 -->
+                        <!-- 關閉按鈕 -->
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- 專案列表顯示區域 -->
+        {% if projects %} <!-- 如果後端傳來的 projects 列表不為空 -->
+            {% for project in projects %} <!-- 遍歷每個專案 -->
+            <!-- 每個專案是一個可點擊的卡片連結，指向該專案的主頁 -->
+            <a href="{{ url_for('project_index', project_name=project.name) }}" class="project-card">
+                <div class="card-body">
+                    <!-- 專案圖示 -->
+                    <div class="icon"> <i class="fas fa-folder"></i> </div>
+                    <!-- 專案名稱和資料夾名稱 -->
+                    <div>
+                        <div class="project-name">{{ project.display_name | e }}</div> <!-- 顯示專案的顯示名稱 (經過 HTML 轉義) -->
+                        <div class="project-folder">({{ project.name | e }})</div> <!-- 顯示專案的內部名稱/資料夾名稱 (經過 HTML 轉義) -->
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        {% else %} <!-- 如果 projects 列表為空 -->
+            <!-- 顯示警告提示框 -->
+            <div class="alert alert-warning" role="alert">
+               <i class="fas fa-exclamation-triangle me-2"></i> 未找到任何專案。請確認 <code>{{ BASE_REPORT_FOLDER }}</code> 資料夾內已建立專案子資料夾。 <!-- 提示使用者檢查報告資料夾 -->
+            </div>
+        {% endif %}
+    </div> <!-- END .container -->
+
+    <!-- 引入 Bootstrap 5 JS Bundle (包含 Popper.js，用於彈窗、提示等交互功能) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
