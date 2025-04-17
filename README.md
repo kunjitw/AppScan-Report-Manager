@@ -74,6 +74,10 @@
 
 
 *   **➕ 如何開始:**
+    *   使用 python 3.X 
+    *   `git clone`
+    *   `cd AppScan-Report-Manager`
+    *   `pip install -r requirements.txt`
     *   建立專案資料夾
     *   建立專案標的清單 `專案資料夾/target.xlsx`
     *   放入 .xml 掃描結果
