@@ -1,1 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-TW"> <!-- 指定頁面語言為繁體中文 -->
+<head>
+    <meta charset="UTF-8"> <!-- 使用 UTF-8 編碼 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 設定響應式視口 -->
+    <title>
+        <!-- 根據是否為全域設定顯示不同的標題 -->
+        {% if is_global %}
+            通用排除規則設定 - AppScan 報告檢視器
+        {% else %}
+            <!-- 如果是專案設定，顯示專案名稱 -->
+            排除規則設定 - {{ project_display_name | default(project_name) | e }}
+        {% endif %}
+    </title>
+    <!-- 引入 Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 引入 Font Awesome 6 圖示庫 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- 引入 Google 字體 (Noto Sans TC) -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- 基本頁面樣式 --- */
+        body {
+            padding: 20px; /* 頁面內邊距 */
+            background-color: #f8f9fa; /* 淺灰色背景 */
+            font-family: 'Noto Sans TC', sans-serif; /* 字體 */
+        }
+        /* --- 內容容器 --- */
+        .container {
+            max-width: 960px; /* 限制最大寬度 */
+            background-color: #fff; /* 白色背景 */
+            padding: 30px; /* 內邊距 */
+            border-radius: 8px; /* 圓角 */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); /* 陰影 */
+        }
+        /* --- 主標題 (H1) --- */
+        h1 {
+            color: #343a40; /* 深灰色 */
+            margin-bottom: 25px; /* 下方間距 */
+            font-weight: 700; /* 加粗 */
+            border-bottom: 1px solid #dee2e6; /* 底線 */
+            padding-bottom: 15px; /* 底線下方內邊距 */
+        }
+        /* --- 主標題後的小字 (例如專案名稱) --- */
+        h1 small {
+            font-size: 0.7em; /* 較小字體 */
+            color: #6c757d; /* 灰色 */
+            font-weight: 400; /* 正常粗細 */
+        }
+        /* --- 次級標題 (H2) --- */
+        h2 {
+            color: #495057; /* 較深的灰色 */
+            margin-top: 30px; /* 上方間距 */
+            margin-bottom: 20px; /* 下方間距 */
+            font-size: 1.4rem; /* 字體大小 */
+            font-weight: 500; /* 半粗 */
+        }
+        /* --- 表單標籤 --- */
+        .form-label {
+            font-weight: 500; /* 半粗 */
+        }
+        /* --- 刪除按鈕樣式 --- */
+        .btn-danger {
+            font-size: 0.8rem; /* 較小字體 */
+            padding: 0.2rem 0.5rem; /* 較小內邊距 */
+        }
+        /* --- 表格樣式 --- */
+        .table {
+            font-size: 0.9rem; /* 較小字體 */
+        }
+        .table th { /* 表頭 */
+            font-weight: 500; /* 半粗 */
+        }
+        /* --- 提示框樣式 --- */
+        .alert {
+            font-size: 0.9rem;
+        }
+        /* --- 返回連結樣式 --- */
+        .back-link {
+            font-size: 0.9rem;
+            color: #6c757d; /* 灰色 */
+            text-decoration: none; /* 無底線 */
+            display: inline-block; /* 行內區塊 */
+            margin-bottom: 20px; /* 下方間距 */
+        }
+        .back-link:hover { /* 懸停效果 */
+            color: #0d6efd; /* 變藍色 */
+            text-decoration: underline; /* 加底線 */
+        }
+        .back-link i { /* 返回圖示 */
+            margin-right: 4px; /* 右側間距 */
+        }
+    </style>
+</head>
+<body>
+    <!-- 主內容容器 -->
+    <div class="container">
+        <!-- 返回連結 (根據是否為全域設定，連結到不同頁面) -->
+        {% if is_global %}
+            <!-- 全域設定頁面：返回專案列表 -->
+            <a href="{{ url_for('list_projects') }}" class="back-link">
+                <i class="fas fa-arrow-left"></i> 返回專案列表
+            </a>
+        {% else %}
+            <!-- 專案特定設定頁面：返回該專案的主頁 -->
+             <a href="{{ url_for('project_index', project_name=project_name) }}" class="back-link">
+                <i class="fas fa-arrow-left"></i> 返回專案 {{ project_display_name | default(project_name) | e }} <!-- 顯示專案名稱 -->
+            </a>
+        {% endif %}
 
+        <!-- 頁面主標題 -->
+        <h1>
+            <i class="fas fa-sliders-h me-2"></i> <!-- 設定圖示 -->
+            {% if is_global %}
+                通用排除規則設定 <!-- 全域標題 -->
+            {% else %}
+                排除規則設定 <small>({{ project_display_name | default(project_name) | e }})</small> <!-- 專案標題及名稱 -->
+            {% endif %}
+        </h1>
+
+        <!-- Flask Flash 訊息顯示區域 -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <!-- 使用 Bootstrap Alert 顯示訊息 -->
+                <div class="alert alert-{{ category if category != 'message' else 'info' }} alert-dismissible fade show" role="alert">
+                    {{ message }} <!-- 訊息內容 -->
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> <!-- 關閉按鈕 -->
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- 新增規則區域 -->
+        <h2>新增排除規則</h2>
+        <p class="text-muted small">
+            根據選擇的模式，當問題符合條件時，狀態將自動設為「已自動排除」。
+            {% if is_global %}此規則將套用至所有專案。{% endif %} <!-- 全域設定的額外提示 -->
+        </p>
+        <!-- 新增規則表單 -->
+        <!-- 表單提交到正確的後端路由 (全域或專案) -->
+        <form method="POST" action="{{ url_for('global_settings_page' if is_global else 'settings_page', project_name=project_name if not is_global else None) }}" id="addRuleForm" class="mb-4 p-3 border rounded bg-light">
+            <!-- 隱藏欄位，標識操作為 "add_rule" -->
+            <input type="hidden" name="action" value="add_rule">
+            <!-- 使用 Bootstrap Grid 系統佈局表單元素 -->
+            <div class="row g-3 align-items-end"> <!-- g-3: 間距; align-items-end: 底部對齊 -->
+                <!-- 匹配模式選擇 -->
+                <div class="col-md-3"> <!-- 在中等螢幕上佔 3/12 寬度 -->
+                    <label for="match_type" class="form-label">匹配模式 <span class="text-danger">*</span></label> <!-- 必填標示 -->
+                    <select class="form-select form-select-sm" id="match_type" name="match_type" required> <!-- 下拉選單 -->
+                        <option value="entity_starts_with" selected>弱點類型 + 實體開頭</option> <!-- 預設選項 -->
+                        <option value="entity_contains">弱點類型 + 實體包含</option>
+                        <option value="issue_type_only">僅弱點類型</option>
+                    </select>
+                </div>
+                <!-- 弱點類型輸入 -->
+                <div class="col-md-4">
+                    <label for="issue_type" class="form-label">弱點類型 (Issue Type) <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control form-control-sm" id="issue_type" name="issue_type" placeholder="例如：跨網站 Scripting" required> <!-- 文本輸入框 -->
+                </div>
+                <!-- 實體 Pattern 輸入 (初始可見) -->
+                <div class="col-md-4" id="entityPatternGroup"> <!-- 添加 ID 以便 JS 控制 -->
+                    <label for="entity_pattern" class="form-label">實體 Pattern</label>
+                    <input type="text" class="form-control form-control-sm" id="entity_pattern" name="entity_pattern" placeholder="例如：/scripts/ 或 .css">
+                     <div class="form-text small">若匹配模式為「僅弱點類型」，此欄位將被忽略。</div> <!-- 提示文字 -->
+                </div>
+                 <!-- 新增按鈕 -->
+                <div class="col-md-1">
+                    <button type="submit" class="btn btn-primary btn-sm w-100"> <!-- w-100: 佔滿欄寬 -->
+                        <i class="fas fa-plus"></i> 新增
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <!-- 分隔線 -->
+        <hr class="my-4">
+
+        <!-- 目前規則顯示區域 -->
+        <h2>目前規則</h2>
+        {% if rules %} <!-- 如果後端傳來的 rules 列表不為空 -->
+            <div class="table-responsive"> <!-- 表格響應式容器 -->
+                <!-- 使用 Bootstrap 表格樣式 -->
+                <table class="table table-striped table-hover align-middle"> <!-- table-striped: 條紋狀; table-hover: 懸停效果; align-middle: 垂直居中 -->
+                    <thead>
+                        <tr>
+                            <!-- 表頭 -->
+                            <th style="width: 25%;">匹配模式</th>
+                            <th style="width: 35%;">弱點類型</th>
+                            <th style="width: 25%;">實體 Pattern</th>
+                            <th style="width: 15%;">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for rule in rules %} <!-- 遍歷每個規則 -->
+                        <tr>
+                             <!-- 顯示匹配模式 -->
+                             <td>
+                                <!-- 讀取規則中的 match_type，若不存在則默認為舊的 'entity_starts_with' -->
+                                {% set match_type = rule.get('match_type', 'entity_starts_with') %}
+                                <!-- 根據 match_type 顯示對應的中文名稱 -->
+                                {% if match_type == 'entity_contains' %}
+                                    弱點類型 + 實體包含
+                                {% elif match_type == 'issue_type_only' %}
+                                    僅弱點類型
+                                {% else %}
+                                    弱點類型 + 實體開頭
+                                {% endif %}
+                            </td>
+                            <!-- 顯示弱點類型 (經過 HTML 轉義) -->
+                            <td>{{ rule.issue_type | e }}</td>
+                            <!-- 顯示實體 Pattern -->
+                            <td>
+                                <!-- 只有當匹配模式不是 "僅弱點類型" 時才顯示 Pattern -->
+                                {% if rule.get('match_type') != 'issue_type_only' %}
+                                    <!-- 顯示 Pattern，若不存在則顯示 'N/A' (經過 HTML 轉義) -->
+                                    {{ rule.get('entity_pattern', 'N/A') | e }}
+                                {% else %}
+                                    <!-- 如果是 "僅弱點類型"，顯示橫線表示不適用 -->
+                                    <span class="text-muted">---</span>
+                                {% endif %}
+                            </td>
+                            <!-- 刪除操作 -->
+                            <td>
+                                <!-- 每個刪除按鈕都在一個獨立的表單中 -->
+                                <!-- 表單提交到正確的後端路由 -->
+                                <form method="POST" action="{{ url_for('global_settings_page' if is_global else 'settings_page', project_name=project_name if not is_global else None) }}" style="display: inline;"> <!-- inline 樣式避免表單換行 -->
+                                    <input type="hidden" name="action" value="delete_rule"> <!-- 標識操作為 "delete_rule" -->
+                                    <!-- 傳遞要刪除規則的索引 (loop.index0 是 Jinja2 提供的從 0 開始的循環索引) -->
+                                    <input type="hidden" name="rule_index" value="{{ loop.index0 }}">
+                                    <!-- 刪除按鈕，點擊時彈出確認對話框 -->
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('確定要刪除此規則嗎？');">
+                                        <i class="fas fa-trash-alt"></i> <!-- 刪除圖示 -->
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %} <!-- 如果 rules 列表為空 -->
+            <p class="text-muted">目前沒有設定任何排除規則。</p> <!-- 顯示提示訊息 -->
+        {% endif %}
+
+    </div> <!-- END .container -->
+
+    <!-- 引入 Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- JavaScript 用於根據選擇的 "匹配模式" 控制 "實體 Pattern" 輸入框的顯示/隱藏和必填狀態 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 獲取相關的 DOM 元素
+            const matchTypeSelect = document.getElementById('match_type'); // 匹配模式下拉選單
+            const entityPatternGroup = document.getElementById('entityPatternGroup'); // 實體 Pattern 的容器 div
+            const entityPatternInput = document.getElementById('entity_pattern'); // 實體 Pattern 的 input 元素
+
+            /**
+             * 根據匹配模式下拉選單的值，切換實體 Pattern 輸入框的顯示和必填狀態
+             */
+            function toggleEntityPattern() {
+                // 確保所有元素都存在
+                if (!matchTypeSelect || !entityPatternGroup || !entityPatternInput) {
+                    console.warn("Required elements for rule form interaction not found.");
+                    return;
+                }
+                // 如果選擇了 "僅弱點類型"
+                if (matchTypeSelect.value === 'issue_type_only') {
+                    entityPatternGroup.style.display = 'none'; // 隱藏實體 Pattern 輸入框
+                    entityPatternInput.required = false; // 設為非必填
+                    // 可以選擇性地在隱藏時清空輸入框的值
+                    // entityPatternInput.value = '';
+                } else { // 如果選擇了其他需要 Pattern 的模式
+                    entityPatternGroup.style.display = 'block'; // 顯示實體 Pattern 輸入框
+                    // 根據具體模式決定是否必填 (雖然目前兩種都需要，但這樣寫更具擴展性)
+                    entityPatternInput.required = (matchTypeSelect.value === 'entity_starts_with' || matchTypeSelect.value === 'entity_contains');
+                }
+            }
+
+            // 監聽匹配模式下拉選單的 change 事件
+            if (matchTypeSelect) {
+                matchTypeSelect.addEventListener('change', toggleEntityPattern);
+                // 在頁面加載時也執行一次，以處理可能的表單預填或錯誤後重新加載的情況
+                toggleEntityPattern();
+            } else {
+                console.warn("Match type select element not found.");
+            }
+        });
+    </script>
+</body>
+</html>
