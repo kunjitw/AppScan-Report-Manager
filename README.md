@@ -75,13 +75,13 @@
 
 *   **➕ 如何開始:**
     *   使用 python 3.X 
-    *   `git clone`
+    *   `git clone "https://github.com/kunjitw/AppScan-Report-Manager.git"`
     *   `cd AppScan-Report-Manager`
     *   `pip install -r requirements.txt`
-    *   建立專案資料夾
-    *   建立專案標的清單 `專案資料夾/target.xlsx`
-    *   放入 .xml 掃描結果
-    *   放入 .scan 掃描檔
+    *   建立專案資料夾 `/report/你的專案名稱`
+    *   建立專案標的清單 `/report/你的專案名稱/target.xlsx`
+    *   放入 .xml 掃描結果 `/report/你的專案名稱/編號-自訂名稱.xml`
+    *   放入 .scan 掃描檔 `/report/你的專案名稱/編號-自訂名稱.scan`
     *   開啟網站伺服器 `python app.py`
     *   使用瀏覽器開啟 Web 應用 `http://127.0.0.1:port`
 
