@@ -2986,7 +2986,10 @@ def verify_vulnerability_via_selenium(project_name):
             if search_term_primary: # 如果有主要查找字串
                 # 準備 JavaScript 查找腳本 (針對 view-source 頁面優化)
                 # caseSensitive=false, forward=true, wrapAround=true, wholeWord=false, searchInFrames=true, showDialog=false
-                js_script_find = f"return window.find('{search_term_primary.replace('\'', '\\\'')}', {'false' if is_external_link_issue else 'true'}, false, true, false, true, false);"
+                escaped_search_term = search_term_primary.replace('\'', '\\\'')
+                case_sensitive_flag = 'false' if is_external_link_issue else 'true'
+                js_script_find = f"return window.find('{escaped_search_term}', {case_sensitive_flag}, false, true, false, true, false);"
+                # js_script_find = f"return window.find('{search_term_primary.replace('\'', '\\\'')}', {'false' if is_external_link_issue else 'true'}, false, true, false, true, false);"
                 try:
                     if driver.execute_script(js_script_find): # 執行 JS 查找
                         found = True
