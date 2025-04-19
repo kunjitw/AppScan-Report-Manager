@@ -3004,7 +3004,8 @@ def verify_vulnerability_via_selenium(project_name):
 
             # 如果主要字串沒找到，且有次要字串，且不是外部連結問題
             if not found and search_term_secondary and not is_external_link_issue:
-                js_script_find_sec = f"return window.find('{search_term_secondary.replace('\'', '\\\'')}', true, false, true, false, true, false);"
+                escaped_search_term_secondary = search_term_secondary.replace('\'', '\\\'')
+                js_script_find_sec = f"return window.find('{escaped_search_term_secondary}', true, false, true, false, true, false);"
                 try:
                     if driver.execute_script(js_script_find_sec): # 查找次要字串
                         found = True
