@@ -2664,7 +2664,7 @@ def export_confirmed_vulnerabilities(project_name):
         worksheet = workbook.active
         safe_sheet_title = re.sub(r"[\\/*?:\[\]]", "_", f"{display_name} 已確認弱點")[:31]
         worksheet.title = safe_sheet_title
-        headers = [ "編號", "掃描狀態", "檔案名稱", "標的名稱", "!!!標的!!!", "!!!弱點1!!!", "!!!弱點2!!!", "!!!弱點3!!!", "!!!弱點4!!!", "!!!弱點5!!!", "!!!弱點6!!!", "!!!弱点7!!!" ]
+        headers = [ "編號", "掃描狀態", "檔案名稱", "標的名稱", "!!!標的!!!", "!!!弱點1!!!", "!!!弱點2!!!", "!!!弱點3!!!", "!!!弱點4!!!", "!!!弱點5!!!", "!!!弱點6!!!", "!!!弱點7!!!" ]
         max_vuln_columns = 7
         vulnerability_start_index = 5
 
