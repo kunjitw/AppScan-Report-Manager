@@ -14,5 +14,10 @@
     {
         "issue_type": "加密的階段作業 (SSL) Cookie 中遺漏安全屬性",
         "entity_pattern": "fontsize"
+    },
+    {
+        "match_type": "entity_contains",
+        "issue_type": "發現不存在網域的鏈結",
+        "entity_pattern": ".gov."
     }
 ]
