@@ -70,7 +70,9 @@
 13. 最後你可以隨時使用 匯出確認弱點 的功能，來匯出所有 狀態為已確認弱點 的弱點\
    （基本上都使用 Excel 匯出，JSON 未來計劃匯出的弱點可直接接入其他系統使用）\
     <img width="1005" alt="image" src="https://github.com/user-attachments/assets/34ca93c1-4ba4-4616-a02c-b071fe6f39c1" />
-14. 匯出 Excel 弱點中的，合併相同類型選項，如果打勾的話，會把弱點名稱相同的，合併
+14. 匯出已確認弱點 Excel 格式\
+    <img width="1771" alt="image" src="https://github.com/user-attachments/assets/328815c4-8dec-4ae2-8e23-84ffb9fb4ae9" />
+
 
 ## 其他示範
 1. 如果你想刪除你的判讀紀錄，可前往 `AppScan-Report-Manager\data\你的專案名稱` 把 `vulnerability_status.json` 刪除
